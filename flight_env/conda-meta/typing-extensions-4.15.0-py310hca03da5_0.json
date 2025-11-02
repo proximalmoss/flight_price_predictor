@@ -1,0 +1,32 @@
+{
+  "name": "typing-extensions",
+  "version": "4.15.0",
+  "build": "py310hca03da5_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/osx-arm64",
+  "subdir": "osx-arm64",
+  "fn": "typing-extensions-4.15.0-py310hca03da5_0.conda",
+  "md5": "9bd89e07e629d05ad5972a546f61e461",
+  "url": "https://repo.anaconda.com/pkgs/main/osx-arm64/typing-extensions-4.15.0-py310hca03da5_0.conda",
+  "sha256": "170546dbec424d731503695b20fbc1fc8e2442eca28808b35950360b600f560b",
+  "depends": [
+    "python >=3.10,<3.11.0a0",
+    "typing_extensions 4.15.0 py310hca03da5_0"
+  ],
+  "constrains": [],
+  "license": "PSF-2.0",
+  "timestamp": 1756281809000,
+  "size": 12373,
+  "requested_spec": "None",
+  "package_tarball_full_path": "/opt/homebrew/Caskroom/miniconda/base/pkgs/typing-extensions-4.15.0-py310hca03da5_0.conda",
+  "extracted_package_dir": "/opt/homebrew/Caskroom/miniconda/base/pkgs/typing-extensions-4.15.0-py310hca03da5_0",
+  "files": [],
+  "paths_data": {
+    "paths_version": 1,
+    "paths": []
+  },
+  "link": {
+    "source": "/opt/homebrew/Caskroom/miniconda/base/pkgs/typing-extensions-4.15.0-py310hca03da5_0",
+    "type": 1
+  }
+}
