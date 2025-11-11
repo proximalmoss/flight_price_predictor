@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 
 from src.exception import CustomException
 from src.logger import logging
@@ -39,8 +39,7 @@ class DataTransformation:
             cat_pipeline=Pipeline(
                 steps=[
                     ("imputer",SimpleImputer(strategy="most_frequent")),
-                    ("one_hot_encoder",OneHotEncoder(sparse_output=False)),
-                    ("Scaler",StandardScaler(with_mean=False))
+                    ("ordinal_encoder",OrdinalEncoder(handle_unknown='use_encoded_value',unknown_value=-1)),
                 ]
             )
 
