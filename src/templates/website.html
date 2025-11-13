@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Price Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            font-family: 'Segoe UI', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #579df8 0%, #4b77f0 100%);
+            min-height: 100vh;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px
+        }
+
+        .container {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1),
+                        0 2px 8px rgba(255,255,255,0.1) inset;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn{
+            from{
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to{
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .input-group {
+            display:  flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95 em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label::before {
+            content: '✈️';
+            font-size: 1.2em;
+        }
+
+        label[for="duration"]::before {content: '🕓';}
+        label[for="days_left"]::before {content: '📅';}
+        label[for="stops"]::before {content: '🔄';}
+        label[for="class"]::before {content: '💺';}
+        label[for="source_city"]::before {content: '🛫';}
+        label[for="destination_city"]::before {content: '🛬';}
+        label[for="departure_time"]::before {content: '🌅';}
+        label[for="arrival_time"]::before {content: '🌆';}
+
+        input, select {
+            padding: 12px 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1em;
+
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:hover, select:hover {
+            border-color: rgba(255,255,255,0.6);
+            background: white;
+        }
+
+        input:focus, select:focus {
+            border-color: #579df8;
+            background: white;
+            box-shadow: 0 0 3px rgba(102, 126, 234, 0.2)
+        }
+
+        .submit-btn {
+            grid-column: 1/-1;
+            padding: 16px;
+            background: linear-gradient(135deg, #579df8 0%, #4b77f0 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto; 
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0 deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            text-align: center;
+
+            animation: slideUp 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h2 {
+            color: #579df8;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 3em;
+            font-weight: bold;
+
+            background: linear-gradient(135deg, #579df8 0%, #4b77f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .price {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>✈️ Flight Price Predictor</h1>
+        <p class="subtitle">Get instant flight price predictions</p>
+
+        <form id="predictionForm">
+            <div class="input-group">
+                <label for="airline">Airline</label>
+                <select id="airline" name="airline" required>
+                    <option value="">Select Airline</option>
+                    <option value="SpiceJet">SpiceJet</option>
+                    <option value="AirAsia">AirAsia</option>
+                    <option value="Vistara">Vistara</option>
+                    <option value="GO_FIRST">GO FIRST</option>
+                    <option value="Indigo">Indigo</option>
+                    <option value="Air_India">Air India</option> 
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="source_city">From City</label>
+                <select id="source_city" name="source_city" required>
+                    <option value="">Select City</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Chennai">Chennai</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="destination_city">To City</label>
+                <select id="destination_city" name="destination_city" required>
+                    <option value="">Select City</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Chennai">Chennai</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="departure_time">Departure Time</label>
+                <select id="departure_time" name="departure_time" required>
+                    <option value="">Select Time</option>
+                    <option value="Early_Morning">Early Morning</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                    <option value="Night">Night</option>
+                    <option value="Late_Night">Late Night</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="arrival_time">Arrival Time</label>
+                <select id="arrival_time" name="arrival_time" required>
+                    <option value="">Select Time</option>
+                    <option value="Early_Morning">Early Morning</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Evening">Evening</option>
+                    <option value="Night">Night</option>
+                    <option value="Late_Night">Late Night</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="stops">Number of Stops</label>
+                <select id="stops" name="stops" required>
+                    <option value="">Select Stops</option>
+                    <option value="zero">Non-Stop</option>
+                    <option value="one">1 Stop</option>
+                    <option value="two_or_more">2+ Stops</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="class">Class</label>
+                <select id="class" name="class" required>
+                    <option value="">Select Class</option>
+                    <option value="Economy">Economy</option>
+                    <option value="Business">Business</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="duration">Duration (hours)</label>
+                <input type="number" id="duration" name="duration" 
+                       min="0.5" max="24" step="0.5" 
+                       placeholder="e.g., 2.5" required>
+            </div>
+            <div class="input-group">
+                <label for="days_left">Days Until Flight</label>
+                <input type="number" id="days_left" name="days_left" 
+                       min="0" max="365" 
+                       placeholder="e.g., 15" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Predict Price
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: white; margin-top: 10px">Predicting your flight price...</p>
+        </div>
+        <div class="result" id="result">
+            <h2>Predicted Flight Price</h2>
+            <div class="price" id="price">₹0</div>
+            <p style="color: #666; margin-top: 10px;">Based on your flight details</p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            document.getElementById('result').style.display='none';
+            document.getElementById('loading').style.display='block';
+
+            const formData= new FormData(this);
+            const data = Object.fromEntries(formData)
+
+            setTimeout(() =>{
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display= 'block';
+
+                const mockPrice = Math.floor(Math.random() * 15000) + 5000;
+                document.getElementById('price').textContent= `₹${mockPrice.toLocaleString('en-IN')}`;
+            }, 2000)
+        });
+    </script>
+</body>
+</html>
