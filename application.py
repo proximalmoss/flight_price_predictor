@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
-application=Flask(__name__)
+application=Flask(__name__, template_folder='src/templates')
 
 app=application
 
@@ -29,11 +29,20 @@ def predict_datapoint():
 
         pred_df=data.get_data_as_data_frame()
         print(pred_df)
+        print("Columns:", pred_df.columns.tolist())
 
         predict_pipeline=PredictPipeline()
         results=predict_pipeline.predict(pred_df)
 
+        print("Prediction result:", results)
+
         return jsonify({'price':int(results[0])})
     
     except Exception as e:
+        print("ERROR:", str(e))
+        import traceback
+        traceback.print_exc()
         return jsonify({'error':str(e)}), 400
+    
+if __name__=="__main__":
+    app.run(host='0.0.0.0', port=5001, debug=True)
